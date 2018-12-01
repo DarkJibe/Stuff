@@ -60,7 +60,7 @@ PERIODES_M_tmp2 <- rbind(PERIODES_M_tmp2, colwise(sd)(tmp[41:60, ]))
 PERIODES_M_tmp2 <- rbind(PERIODES_M_tmp2, colwise(sd)(tmp[61:78, ]))
 PERIODES_M_tmp2 <- rbind(PERIODES_M_tmp2, colwise(sd)(tmp[79:96, ]))
 PERIODES_M_tmp2 <- rbind(PERIODES_M_tmp2, colwise(sd)(tmp[97:114, ]))
-colnames(PERIODES_M_tmp2) <- c("NB_FIXATION_sd", "NB_ROUTE_sd", "NB_RETRO_sd", "NB_AVB_sd", "NB_AUTRE_sd", "TPS_FIXATION_sd", "FRQ_FIXATION_sd", "TPS_ROUTE_sd", "FRQ_ROUTE_sd", "TPS_RETRO_sd", "FRQ_RETRO_sd", "TPS_AVB_sd", "FRQ_AVB_sd", "TPS_AUTRE_sd", "FRQ_AUTRE_sd", "NB_RETRO_ROUTE_sd", "TPS_RETRO_ROUTE_sd", "FRQ_RETRO_ROUTE_sd")
+colnames(PERIODES_M_tmp2) <- c("NB_FIXATION_sd", "NB_ROUTE_sd", "NB_RETRO_sd", "NB_AVB_sd", "NB_AUTRE_sd", "TPS_FIXATION_sd", "FRQ_FIXATION_sd", "TPS_ROUTE_sd", "FRQ_ROUTE_sd", "TPS_RETRO_sd", "FRQ_RETRO_sd", "TPS_AVB_sd", "FRQ_AVB_sd", "TPS_AUTRE_sd", "FRQ_AUTRE_sd")
 
 PERIODES_M <- cbind(PERIODES_M, PERIODES_M_tmp, PERIODES_M_tmp2)
 rm(tmp, PERIODES_M_tmp, PERIODES_M_tmp2)
@@ -77,21 +77,23 @@ CU_M_tmp2 <- colwise(sd)(tmp[1:20,])
 CU_M_tmp2 <- rbind(CU_M_tmp2, colwise(sd)(tmp[21:40,]))
 CU_M_tmp2 <- rbind(CU_M_tmp2, colwise(sd)(tmp[41:58,]))
 CU_M_tmp2 <- rbind(CU_M_tmp2, colwise(sd)(tmp[69:76,]))
-colnames(CU_M_tmp2) <- c("NB_FIXATION_sd", "NB_ROUTE_sd", "NB_RETRO_sd", "NB_AVB_sd", "NB_AUTRE_sd", "TPS_FIXATION_sd", "FRQ_FIXATION_sd", "TPS_ROUTE_sd", "FRQ_ROUTE_sd", "TPS_RETRO_sd", "FRQ_RETRO_sd", "TPS_AVB_sd", "FRQ_AVB_sd", "TPS_AUTRE_sd", "FRQ_AUTRE_sd", "NB_RETRO_ROUTE_sd", "TPS_RETRO_ROUTE_sd", "FRQ_RETRO_ROUTE_sd")
+colnames(CU_M_tmp2) <- c("NB_FIXATION_sd", "NB_ROUTE_sd", "NB_RETRO_sd", "NB_AVB_sd", "NB_AUTRE_sd", "TPS_FIXATION_sd", "FRQ_FIXATION_sd", "TPS_ROUTE_sd", "FRQ_ROUTE_sd", "TPS_RETRO_sd", "FRQ_RETRO_sd", "TPS_AVB_sd", "FRQ_AVB_sd", "TPS_AUTRE_sd", "FRQ_AUTRE_sd")
 
 CU_M <- cbind(CU_M, CU_M_tmp, CU_M_tmp2)
 rm(tmp, CU_M_tmp, CU_M_tmp2)
 ```
 
 
-################ NOMBRE DE REGARDS
+# NOMBRE DE REGARDS
 
-ANOVA ET T-TEST NOMBRE DE REGARDS PÉRIODES
+## ANOVA ET T-TEST NOMBRE DE REGARDS PÉRIODES
 ```{r}
 NB_TOT_AOV <- Anova(lm(NB_FIXATION~TEMPS*GROUPE, data = PERIODES), type = 2, white.adjust=TRUE)
 NB_TOT_AOV_ST <- anova_stats(Anova(lm(NB_FIXATION~TEMPS*GROUPE, data = PERIODES), type = 2))
 NB_TOT_AOV
 NB_TOT_AOV_ST
+
+TukeyHSD(aov(NB_FIXATION~TEMPS*GROUPE, data = PERIODES))
 
 ggplot(PERIODES_M) + aes(x = TEMPS, y = NB_FIXATION, group= GROUPE, col = GROUPE, ymin = 0) + 
   geom_line(position=position_dodge(0.1)) + 
@@ -102,143 +104,113 @@ ggplot(PERIODES_M) + aes(x = TEMPS, y = NB_FIXATION, group= GROUPE, col = GROUPE
   labs(x = "Période", y = "Nombre de regards", col = "Groupe") +
   theme(plot.title = element_text(hjust = 0.5))
 
-t.test(CONF_TOT$NB_FIXATION, MEF_TOT$NB_FIXATION, alternative = c("two.sided"), paired = FALSE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(CONF_TOT$NB_FIXATION, MEF_TOT$NB_FIXATION)))
-t.test(CONF_P1$NB_FIXATION, MEF_P1$NB_FIXATION, alternative = c("two.sided"), paired = FALSE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(CONF_P1$NB_FIXATION, MEF_P1$NB_FIXATION)))
-t.test(CONF_P2$NB_FIXATION, MEF_P2$NB_FIXATION, alternative = c("two.sided"), paired = FALSE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(CONF_P2$NB_FIXATION, MEF_P2$NB_FIXATION)))
-t.test(CONF_P3$NB_FIXATION, MEF_P3$NB_FIXATION, alternative = c("two.sided"), paired = FALSE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(CONF_P3$NB_FIXATION, MEF_P3$NB_FIXATION)))
-
-t.test(CONF_P1$NB_FIXATION, CONF_P2$NB_FIXATION, alternative = c("two.sided"), paired = TRUE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(CONF_P1$NB_FIXATION, CONF_P2$NB_FIXATION, method = "paired")))
-t.test(CONF_P2$NB_FIXATION, CONF_P3$NB_FIXATION, alternative = c("two.sided"), paired = TRUE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(CONF_P2$NB_FIXATION, CONF_P3$NB_FIXATION, method = "paired")))
-t.test(MEF_P1$NB_FIXATION, MEF_P2$NB_FIXATION, alternative = c("two.sided"), paired = TRUE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(MEF_P1$NB_FIXATION, MEF_P2$NB_FIXATION, method = "paired")))
-t.test(MEF_P2$NB_FIXATION, MEF_P3$NB_FIXATION, alternative = c("two.sided"), paired = TRUE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(MEF_P2$NB_FIXATION, MEF_P3$NB_FIXATION, method = "paired")))
+# t.test(CONF_TOT$NB_FIXATION, MEF_TOT$NB_FIXATION, alternative = c("two.sided"), paired = FALSE, var.equal = FALSE, conf.level = 0.95)
+# print(paste("Cohen's d :", cohensD(CONF_TOT$NB_FIXATION, MEF_TOT$NB_FIXATION)))
+# t.test(CONF_P1$NB_FIXATION, MEF_P1$NB_FIXATION, alternative = c("two.sided"), paired = FALSE, var.equal = FALSE, conf.level = 0.95)
+# print(paste("Cohen's d :", cohensD(CONF_P1$NB_FIXATION, MEF_P1$NB_FIXATION)))
+# t.test(CONF_P2$NB_FIXATION, MEF_P2$NB_FIXATION, alternative = c("two.sided"), paired = FALSE, var.equal = FALSE, conf.level = 0.95)
+# print(paste("Cohen's d :", cohensD(CONF_P2$NB_FIXATION, MEF_P2$NB_FIXATION)))
+# t.test(CONF_P3$NB_FIXATION, MEF_P3$NB_FIXATION, alternative = c("two.sided"), paired = FALSE, var.equal = FALSE, conf.level = 0.95)
+# print(paste("Cohen's d :", cohensD(CONF_P3$NB_FIXATION, MEF_P3$NB_FIXATION)))
+# 
+# t.test(CONF_P1$NB_FIXATION, CONF_P2$NB_FIXATION, alternative = c("two.sided"), paired = TRUE, var.equal = FALSE, conf.level = 0.95)
+# print(paste("Cohen's d :", cohensD(CONF_P1$NB_FIXATION, CONF_P2$NB_FIXATION, method = "paired")))
+# t.test(CONF_P2$NB_FIXATION, CONF_P3$NB_FIXATION, alternative = c("two.sided"), paired = TRUE, var.equal = FALSE, conf.level = 0.95)
+# print(paste("Cohen's d :", cohensD(CONF_P2$NB_FIXATION, CONF_P3$NB_FIXATION, method = "paired")))
+# t.test(MEF_P1$NB_FIXATION, MEF_P2$NB_FIXATION, alternative = c("two.sided"), paired = TRUE, var.equal = FALSE, conf.level = 0.95)
+# print(paste("Cohen's d :", cohensD(MEF_P1$NB_FIXATION, MEF_P2$NB_FIXATION, method = "paired")))
+# t.test(MEF_P2$NB_FIXATION, MEF_P3$NB_FIXATION, alternative = c("two.sided"), paired = TRUE, var.equal = FALSE, conf.level = 0.95)
+# print(paste("Cohen's d :", cohensD(MEF_P2$NB_FIXATION, MEF_P3$NB_FIXATION, method = "paired")))
 
 NB_ROUTE_AOV <- Anova(lm(NB_ROUTE~TEMPS*GROUPE, data = PERIODES), type = 2, white.adjust=TRUE)
 NB_ROUTE_AOV_ST <- anova_stats(Anova(lm(NB_ROUTE~TEMPS*GROUPE, data = PERIODES), type = 2))
 NB_ROUTE_AOV
 NB_ROUTE_AOV_ST
 
+TukeyHSD(aov(NB_ROUTE~TEMPS*GROUPE, data = PERIODES))
+
 ggplot(PERIODES_M) + aes(x = TEMPS, y = NB_ROUTE, group= GROUPE, col = GROUPE, ymin = 0) + geom_line(position=position_dodge(0.1)) + geom_point(position=position_dodge(0.1)) + geom_errorbar(aes(ymin=NB_ROUTE-NB_ROUTE_sd, ymax=NB_ROUTE+NB_ROUTE_sd), width=0.1, position=position_dodge(0.1)) +
   ggtitle("Nombre de regards vers la route") + 
   labs(x = "Période", y = "Nombre de regards", col = "Groupe") + 
   theme(plot.title = element_text(hjust = 0.5))
 
-t.test(CONF_TOT$NB_ROUTE, MEF_TOT$NB_ROUTE, alternative = c("two.sided"), paired = FALSE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(CONF_TOT$NB_ROUTE, MEF_TOT$NB_ROUTE)))
-t.test(CONF_P1$NB_ROUTE, MEF_P1$NB_ROUTE, alternative = c("two.sided"), paired = FALSE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(CONF_P1$NB_ROUTE, MEF_P1$NB_ROUTE)))
-t.test(CONF_P2$NB_ROUTE, MEF_P2$NB_ROUTE, alternative = c("two.sided"), paired = FALSE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(CONF_P2$NB_ROUTE, MEF_P2$NB_ROUTE)))
-t.test(CONF_P3$NB_ROUTE, MEF_P3$NB_ROUTE, alternative = c("two.sided"), paired = FALSE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(CONF_P3$NB_ROUTE, MEF_P3$NB_ROUTE)))
-
-t.test(CONF_P1$NB_ROUTE, CONF_P2$NB_ROUTE, alternative = c("two.sided"), paired = TRUE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(CONF_P1$NB_ROUTE, CONF_P2$NB_ROUTE, method = "paired")))
-t.test(CONF_P2$NB_ROUTE, CONF_P3$NB_ROUTE, alternative = c("two.sided"), paired = TRUE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(CONF_P2$NB_ROUTE, CONF_P3$NB_ROUTE, method = "paired")))
-t.test(MEF_P1$NB_ROUTE, MEF_P2$NB_ROUTE, alternative = c("two.sided"), paired = TRUE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(MEF_P1$NB_ROUTE, MEF_P2$NB_ROUTE, method = "paired")))
-t.test(MEF_P2$NB_ROUTE, MEF_P3$NB_ROUTE, alternative = c("two.sided"), paired = TRUE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(MEF_P2$NB_ROUTE, MEF_P3$NB_ROUTE, method = "paired")))
+# t.test(CONF_TOT$NB_ROUTE, MEF_TOT$NB_ROUTE, alternative = c("two.sided"), paired = FALSE, var.equal = FALSE, conf.level = 0.95)
+# print(paste("Cohen's d :", cohensD(CONF_TOT$NB_ROUTE, MEF_TOT$NB_ROUTE)))
+# t.test(CONF_P1$NB_ROUTE, MEF_P1$NB_ROUTE, alternative = c("two.sided"), paired = FALSE, var.equal = FALSE, conf.level = 0.95)
+# print(paste("Cohen's d :", cohensD(CONF_P1$NB_ROUTE, MEF_P1$NB_ROUTE)))
+# t.test(CONF_P2$NB_ROUTE, MEF_P2$NB_ROUTE, alternative = c("two.sided"), paired = FALSE, var.equal = FALSE, conf.level = 0.95)
+# print(paste("Cohen's d :", cohensD(CONF_P2$NB_ROUTE, MEF_P2$NB_ROUTE)))
+# t.test(CONF_P3$NB_ROUTE, MEF_P3$NB_ROUTE, alternative = c("two.sided"), paired = FALSE, var.equal = FALSE, conf.level = 0.95)
+# print(paste("Cohen's d :", cohensD(CONF_P3$NB_ROUTE, MEF_P3$NB_ROUTE)))
+# 
+# t.test(CONF_P1$NB_ROUTE, CONF_P2$NB_ROUTE, alternative = c("two.sided"), paired = TRUE, var.equal = FALSE, conf.level = 0.95)
+# print(paste("Cohen's d :", cohensD(CONF_P1$NB_ROUTE, CONF_P2$NB_ROUTE, method = "paired")))
+# t.test(CONF_P2$NB_ROUTE, CONF_P3$NB_ROUTE, alternative = c("two.sided"), paired = TRUE, var.equal = FALSE, conf.level = 0.95)
+# print(paste("Cohen's d :", cohensD(CONF_P2$NB_ROUTE, CONF_P3$NB_ROUTE, method = "paired")))
+# t.test(MEF_P1$NB_ROUTE, MEF_P2$NB_ROUTE, alternative = c("two.sided"), paired = TRUE, var.equal = FALSE, conf.level = 0.95)
+# print(paste("Cohen's d :", cohensD(MEF_P1$NB_ROUTE, MEF_P2$NB_ROUTE, method = "paired")))
+# t.test(MEF_P2$NB_ROUTE, MEF_P3$NB_ROUTE, alternative = c("two.sided"), paired = TRUE, var.equal = FALSE, conf.level = 0.95)
+# print(paste("Cohen's d :", cohensD(MEF_P2$NB_ROUTE, MEF_P3$NB_ROUTE, method = "paired")))
 
 NB_RETRO_AOV <- Anova(lm(NB_RETRO~TEMPS*GROUPE, data = PERIODES), type = 2, white.adjust=TRUE)
 NB_RETRO_AOV_ST <- anova_stats(Anova(lm(NB_RETRO~TEMPS*GROUPE, data = PERIODES), type = 2))
 NB_RETRO_AOV
 NB_RETRO_AOV_ST
 
+TukeyHSD(aov(NB_RETRO~TEMPS*GROUPE, data = PERIODES))
+
 ggplot(PERIODES_M) + aes(x = TEMPS, y = NB_RETRO, group= GROUPE, col = GROUPE, ymin = 0) + geom_line(position=position_dodge(0.1)) + geom_point(position=position_dodge(0.1)) + geom_errorbar(aes(ymin=NB_RETRO-NB_RETRO_sd, ymax=NB_RETRO+NB_RETRO_sd), width=0.1, position=position_dodge(0.1)) +
   ggtitle("Nombre de regards vers les rétroviseurs") + 
   labs(x = "Période", y = "Nombre de regards", col = "Groupe") + 
   theme(plot.title = element_text(hjust = 0.5))
 
-t.test(CONF_TOT$NB_RETRO, MEF_TOT$NB_RETRO, alternative = c("two.sided"), paired = FALSE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(CONF_TOT$NB_RETRO, MEF_TOT$NB_RETRO)))
-t.test(CONF_P1$NB_RETRO, MEF_P1$NB_RETRO, alternative = c("two.sided"), paired = FALSE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(CONF_P1$NB_RETRO, MEF_P1$NB_RETRO)))
-t.test(CONF_P2$NB_RETRO, MEF_P2$NB_RETRO, alternative = c("two.sided"), paired = FALSE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(CONF_P2$NB_RETRO, MEF_P2$NB_RETRO)))
-t.test(CONF_P3$NB_RETRO, MEF_P3$NB_RETRO, alternative = c("two.sided"), paired = FALSE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(CONF_P3$NB_RETRO, MEF_P3$NB_RETRO)))
-
-t.test(CONF_P1$NB_RETRO, CONF_P2$NB_RETRO, alternative = c("two.sided"), paired = TRUE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(CONF_P1$NB_RETRO, CONF_P2$NB_RETRO, method = "paired")))
-t.test(CONF_P2$NB_RETRO, CONF_P3$NB_RETRO, alternative = c("two.sided"), paired = TRUE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(CONF_P2$NB_RETRO, CONF_P3$NB_RETRO, method = "paired")))
-t.test(MEF_P1$NB_RETRO, MEF_P2$NB_RETRO, alternative = c("two.sided"), paired = TRUE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(MEF_P1$NB_RETRO, MEF_P2$NB_RETRO, method = "paired")))
-t.test(MEF_P2$NB_RETRO, MEF_P3$NB_RETRO, alternative = c("two.sided"), paired = TRUE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(MEF_P2$NB_RETRO, MEF_P3$NB_RETRO, method = "paired")))
-
-
-NB_RETRO_ROUTE_AOV <- Anova(lm(NB_RETRO_ROUTE~TEMPS*GROUPE, data = PERIODES), type = 2, white.adjust=TRUE)
-NB_RETRO_ROUTE_AOV_ST <- anova_stats(Anova(lm(NB_RETRO_ROUTE~TEMPS*GROUPE, data = PERIODES), type = 2))
-NB_RETRO_ROUTE_AOV
-NB_RETRO_ROUTE_AOV_ST
-
-ggplot(PERIODES_M) + 
-  geom_line(aes(x = TEMPS, y = NB_RETRO_ROUTE, group= GROUPE, col = GROUPE, linetype = "dashed"), position=position_dodge(0.1)) + 
-    geom_line(aes(x = TEMPS, y = NB_AVB, group= GROUPE, col = GROUPE, linetype = "solid"), position=position_dodge(0.2)) + 
-  scale_linetype_discrete(name = "Données", labels = c("Route/Rétro", "AVB")) +
-  geom_point(aes(x = TEMPS, y = NB_RETRO_ROUTE, group= GROUPE, col = GROUPE), position=position_dodge(0.1)) + geom_point(aes(x = TEMPS, y = NB_AVB, group= GROUPE, col = GROUPE), position=position_dodge(0.2)) +
-  geom_errorbar(aes(x = TEMPS, y = NB_RETRO_ROUTE, group= GROUPE, col = GROUPE, ymin=NB_RETRO_ROUTE-NB_RETRO_ROUTE_sd, ymax=NB_RETRO_ROUTE+NB_RETRO_ROUTE_sd), width=0.1, position=position_dodge(0.1)) +
-  geom_errorbar(aes(x = TEMPS, y = NB_RETRO_ROUTE, group= GROUPE, col = GROUPE, ymin=NB_AVB-NB_AVB_sd, ymax=NB_AVB+NB_AVB_sd), width=0.1, position=position_dodge(0.2)) + 
-  ggtitle("Nombre de regards vers la route\n& les rétroviseurs vs vers l'AVB") + 
-  labs(x = "Période", y = "Nombre de regards", col = "Groupe") + 
-  theme(plot.title = element_text(hjust = 0.5))
-
-t.test(CONF_TOT$NB_RETRO_ROUTE, MEF_TOT$NB_RETRO_ROUTE, alternative = c("two.sided"), paired = FALSE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(CONF_TOT$NB_RETRO_ROUTE, MEF_TOT$NB_RETRO_ROUTE)))
-t.test(CONF_P1$NB_RETRO_ROUTE, MEF_P1$NB_RETRO_ROUTE, alternative = c("two.sided"), paired = FALSE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(CONF_P1$NB_RETRO_ROUTE, MEF_P1$NB_RETRO_ROUTE)))
-t.test(CONF_P2$NB_RETRO_ROUTE, MEF_P2$NB_RETRO_ROUTE, alternative = c("two.sided"), paired = FALSE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(CONF_P2$NB_RETRO_ROUTE, MEF_P2$NB_RETRO_ROUTE)))
-t.test(CONF_P3$NB_RETRO_ROUTE, MEF_P3$NB_RETRO_ROUTE, alternative = c("two.sided"), paired = FALSE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(CONF_P3$NB_RETRO_ROUTE, MEF_P3$NB_RETRO_ROUTE)))
-
-t.test(CONF_P1$NB_RETRO_ROUTE, CONF_P2$NB_RETRO_ROUTE, alternative = c("two.sided"), paired = TRUE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(CONF_P1$NB_RETRO_ROUTE, CONF_P2$NB_RETRO_ROUTE, method = "paired")))
-t.test(CONF_P2$NB_RETRO_ROUTE, CONF_P3$NB_RETRO_ROUTE, alternative = c("two.sided"), paired = TRUE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(CONF_P2$NB_RETRO_ROUTE, CONF_P3$NB_RETRO_ROUTE, method = "paired")))
-t.test(MEF_P1$NB_RETRO_ROUTE, MEF_P2$NB_RETRO_ROUTE, alternative = c("two.sided"), paired = TRUE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(MEF_P1$NB_RETRO_ROUTE, MEF_P2$NB_RETRO_ROUTE, method = "paired")))
-t.test(MEF_P2$NB_RETRO_ROUTE, MEF_P3$NB_RETRO_ROUTE, alternative = c("two.sided"), paired = TRUE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(MEF_P2$NB_RETRO_ROUTE, MEF_P3$NB_RETRO_ROUTE, method = "paired")))
-
+# t.test(CONF_TOT$NB_RETRO, MEF_TOT$NB_RETRO, alternative = c("two.sided"), paired = FALSE, var.equal = FALSE, conf.level = 0.95)
+# print(paste("Cohen's d :", cohensD(CONF_TOT$NB_RETRO, MEF_TOT$NB_RETRO)))
+# t.test(CONF_P1$NB_RETRO, MEF_P1$NB_RETRO, alternative = c("two.sided"), paired = FALSE, var.equal = FALSE, conf.level = 0.95)
+# print(paste("Cohen's d :", cohensD(CONF_P1$NB_RETRO, MEF_P1$NB_RETRO)))
+# t.test(CONF_P2$NB_RETRO, MEF_P2$NB_RETRO, alternative = c("two.sided"), paired = FALSE, var.equal = FALSE, conf.level = 0.95)
+# print(paste("Cohen's d :", cohensD(CONF_P2$NB_RETRO, MEF_P2$NB_RETRO)))
+# t.test(CONF_P3$NB_RETRO, MEF_P3$NB_RETRO, alternative = c("two.sided"), paired = FALSE, var.equal = FALSE, conf.level = 0.95)
+# print(paste("Cohen's d :", cohensD(CONF_P3$NB_RETRO, MEF_P3$NB_RETRO)))
+# 
+# t.test(CONF_P1$NB_RETRO, CONF_P2$NB_RETRO, alternative = c("two.sided"), paired = TRUE, var.equal = FALSE, conf.level = 0.95)
+# print(paste("Cohen's d :", cohensD(CONF_P1$NB_RETRO, CONF_P2$NB_RETRO, method = "paired")))
+# t.test(CONF_P2$NB_RETRO, CONF_P3$NB_RETRO, alternative = c("two.sided"), paired = TRUE, var.equal = FALSE, conf.level = 0.95)
+# print(paste("Cohen's d :", cohensD(CONF_P2$NB_RETRO, CONF_P3$NB_RETRO, method = "paired")))
+# t.test(MEF_P1$NB_RETRO, MEF_P2$NB_RETRO, alternative = c("two.sided"), paired = TRUE, var.equal = FALSE, conf.level = 0.95)
+# print(paste("Cohen's d :", cohensD(MEF_P1$NB_RETRO, MEF_P2$NB_RETRO, method = "paired")))
+# t.test(MEF_P2$NB_RETRO, MEF_P3$NB_RETRO, alternative = c("two.sided"), paired = TRUE, var.equal = FALSE, conf.level = 0.95)
+# print(paste("Cohen's d :", cohensD(MEF_P2$NB_RETRO, MEF_P3$NB_RETRO, method = "paired")))
 
 NB_AVB_AOV <- Anova(lm(NB_AVB~TEMPS*GROUPE, data = PERIODES), type = 2, white.adjust=TRUE)
 NB_AVB_AOV_ST <- anova_stats(Anova(lm(NB_AVB~TEMPS*GROUPE, data = PERIODES), type = 2))
 NB_AVB_AOV
 NB_AVB_AOV_ST
 
+TukeyHSD(aov(NB_AVB~TEMPS*GROUPE, data = PERIODES))
+
 ggplot(PERIODES_M) + aes(x = TEMPS, y = NB_AVB, group= GROUPE, col = GROUPE, ymin = 0) + geom_line(position=position_dodge(0.1)) + geom_point(position=position_dodge(0.1)) + geom_errorbar(aes(ymin=NB_AVB-NB_AVB_sd, ymax=NB_AVB+NB_AVB_sd), width=0.1, position=position_dodge(0.1)) + 
   ggtitle("Nombre de regards vers l'AVB") + 
   labs(x = "Période", y = "Nombre de regards", col = "Groupe") + 
   theme(plot.title = element_text(hjust = 0.5))
 
-t.test(CONF_TOT$NB_AVB, MEF_TOT$NB_AVB, alternative = c("two.sided"), paired = FALSE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(CONF_TOT$NB_AVB, MEF_TOT$NB_AVB)))
-t.test(CONF_P1$NB_AVB, MEF_P1$NB_AVB, alternative = c("two.sided"), paired = FALSE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(CONF_P1$NB_AVB, MEF_P1$NB_AVB)))
-t.test(CONF_P2$NB_AVB, MEF_P2$NB_AVB, alternative = c("two.sided"), paired = FALSE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(CONF_P2$NB_AVB, MEF_P2$NB_AVB)))
-t.test(CONF_P3$NB_AVB, MEF_P3$NB_AVB, alternative = c("two.sided"), paired = FALSE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(CONF_P3$NB_AVB, MEF_P3$NB_AVB)))
-
-t.test(CONF_P1$NB_AVB, CONF_P2$NB_AVB, alternative = c("two.sided"), paired = TRUE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(CONF_P1$NB_AVB, CONF_P2$NB_AVB, method = "paired")))
-t.test(CONF_P2$NB_AVB, CONF_P3$NB_AVB, alternative = c("two.sided"), paired = TRUE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(CONF_P2$NB_AVB, CONF_P3$NB_AVB, method = "paired")))
-t.test(MEF_P1$NB_AVB, MEF_P2$NB_AVB, alternative = c("two.sided"), paired = TRUE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(MEF_P1$NB_AVB, MEF_P2$NB_AVB, method = "paired")))
-t.test(MEF_P2$NB_AVB, MEF_P3$NB_AVB, alternative = c("two.sided"), paired = TRUE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(MEF_P2$NB_AVB, MEF_P3$NB_AVB, method = "paired")))
+# t.test(CONF_TOT$NB_AVB, MEF_TOT$NB_AVB, alternative = c("two.sided"), paired = FALSE, var.equal = FALSE, conf.level = 0.95)
+# print(paste("Cohen's d :", cohensD(CONF_TOT$NB_AVB, MEF_TOT$NB_AVB)))
+# t.test(CONF_P1$NB_AVB, MEF_P1$NB_AVB, alternative = c("two.sided"), paired = FALSE, var.equal = FALSE, conf.level = 0.95)
+# print(paste("Cohen's d :", cohensD(CONF_P1$NB_AVB, MEF_P1$NB_AVB)))
+# t.test(CONF_P2$NB_AVB, MEF_P2$NB_AVB, alternative = c("two.sided"), paired = FALSE, var.equal = FALSE, conf.level = 0.95)
+# print(paste("Cohen's d :", cohensD(CONF_P2$NB_AVB, MEF_P2$NB_AVB)))
+# t.test(CONF_P3$NB_AVB, MEF_P3$NB_AVB, alternative = c("two.sided"), paired = FALSE, var.equal = FALSE, conf.level = 0.95)
+# print(paste("Cohen's d :", cohensD(CONF_P3$NB_AVB, MEF_P3$NB_AVB)))
+# 
+# t.test(CONF_P1$NB_AVB, CONF_P2$NB_AVB, alternative = c("two.sided"), paired = TRUE, var.equal = FALSE, conf.level = 0.95)
+# print(paste("Cohen's d :", cohensD(CONF_P1$NB_AVB, CONF_P2$NB_AVB, method = "paired")))
+# t.test(CONF_P2$NB_AVB, CONF_P3$NB_AVB, alternative = c("two.sided"), paired = TRUE, var.equal = FALSE, conf.level = 0.95)
+# print(paste("Cohen's d :", cohensD(CONF_P2$NB_AVB, CONF_P3$NB_AVB, method = "paired")))
+# t.test(MEF_P1$NB_AVB, MEF_P2$NB_AVB, alternative = c("two.sided"), paired = TRUE, var.equal = FALSE, conf.level = 0.95)
+# print(paste("Cohen's d :", cohensD(MEF_P1$NB_AVB, MEF_P2$NB_AVB, method = "paired")))
+# t.test(MEF_P2$NB_AVB, MEF_P3$NB_AVB, alternative = c("two.sided"), paired = TRUE, var.equal = FALSE, conf.level = 0.95)
+# print(paste("Cohen's d :", cohensD(MEF_P2$NB_AVB, MEF_P3$NB_AVB, method = "paired")))
 
 NB_AUTRE_AOV <- Anova(lm(NB_AUTRE~TEMPS*GROUPE, data = PERIODES), type = 2, white.adjust=TRUE)
 NB_AUTRE_AOV_ST <- anova_stats(Anova(lm(NB_AUTRE~TEMPS*GROUPE, data = PERIODES), type = 2))
@@ -250,26 +222,26 @@ ggplot(PERIODES_M) + aes(x = TEMPS, y = NB_AUTRE, group= GROUPE, col = GROUPE, y
   labs(x = "Période", y = "Nombre de regards", col = "Groupe") + 
   theme(plot.title = element_text(hjust = 0.5))
 
-t.test(CONF_TOT$NB_AUTRE, MEF_TOT$NB_AUTRE, alternative = c("two.sided"), paired = FALSE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(CONF_TOT$NB_AUTRE, MEF_TOT$NB_AUTRE)))
-t.test(CONF_P1$NB_AUTRE, MEF_P1$NB_AUTRE, alternative = c("two.sided"), paired = FALSE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(CONF_P1$NB_AUTRE, MEF_P1$NB_AUTRE)))
-t.test(CONF_P2$NB_AUTRE, MEF_P2$NB_AUTRE, alternative = c("two.sided"), paired = FALSE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(CONF_P2$NB_AUTRE, MEF_P2$NB_AUTRE)))
-t.test(CONF_P3$NB_AUTRE, MEF_P3$NB_AUTRE, alternative = c("two.sided"), paired = FALSE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(CONF_P3$NB_AUTRE, MEF_P3$NB_AUTRE)))
-
-t.test(CONF_P1$NB_AUTRE, CONF_P2$NB_AUTRE, alternative = c("two.sided"), paired = TRUE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(CONF_P1$NB_AUTRE, CONF_P2$NB_AUTRE, method = "paired")))
-t.test(CONF_P2$NB_AUTRE, CONF_P3$NB_AUTRE, alternative = c("two.sided"), paired = TRUE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(CONF_P2$NB_AUTRE, CONF_P3$NB_AUTRE, method = "paired")))
-t.test(MEF_P1$NB_AUTRE, MEF_P2$NB_AUTRE, alternative = c("two.sided"), paired = TRUE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(MEF_P1$NB_AUTRE, MEF_P2$NB_AUTRE, method = "paired")))
-t.test(MEF_P2$NB_AUTRE, MEF_P3$NB_AUTRE, alternative = c("two.sided"), paired = TRUE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(MEF_P2$NB_AUTRE, MEF_P3$NB_AUTRE, method = "paired")))
+# t.test(CONF_TOT$NB_AUTRE, MEF_TOT$NB_AUTRE, alternative = c("two.sided"), paired = FALSE, var.equal = FALSE, conf.level = 0.95)
+# print(paste("Cohen's d :", cohensD(CONF_TOT$NB_AUTRE, MEF_TOT$NB_AUTRE)))
+# t.test(CONF_P1$NB_AUTRE, MEF_P1$NB_AUTRE, alternative = c("two.sided"), paired = FALSE, var.equal = FALSE, conf.level = 0.95)
+# print(paste("Cohen's d :", cohensD(CONF_P1$NB_AUTRE, MEF_P1$NB_AUTRE)))
+# t.test(CONF_P2$NB_AUTRE, MEF_P2$NB_AUTRE, alternative = c("two.sided"), paired = FALSE, var.equal = FALSE, conf.level = 0.95)
+# print(paste("Cohen's d :", cohensD(CONF_P2$NB_AUTRE, MEF_P2$NB_AUTRE)))
+# t.test(CONF_P3$NB_AUTRE, MEF_P3$NB_AUTRE, alternative = c("two.sided"), paired = FALSE, var.equal = FALSE, conf.level = 0.95)
+# print(paste("Cohen's d :", cohensD(CONF_P3$NB_AUTRE, MEF_P3$NB_AUTRE)))
+# 
+# t.test(CONF_P1$NB_AUTRE, CONF_P2$NB_AUTRE, alternative = c("two.sided"), paired = TRUE, var.equal = FALSE, conf.level = 0.95)
+# print(paste("Cohen's d :", cohensD(CONF_P1$NB_AUTRE, CONF_P2$NB_AUTRE, method = "paired")))
+# t.test(CONF_P2$NB_AUTRE, CONF_P3$NB_AUTRE, alternative = c("two.sided"), paired = TRUE, var.equal = FALSE, conf.level = 0.95)
+# print(paste("Cohen's d :", cohensD(CONF_P2$NB_AUTRE, CONF_P3$NB_AUTRE, method = "paired")))
+# t.test(MEF_P1$NB_AUTRE, MEF_P2$NB_AUTRE, alternative = c("two.sided"), paired = TRUE, var.equal = FALSE, conf.level = 0.95)
+# print(paste("Cohen's d :", cohensD(MEF_P1$NB_AUTRE, MEF_P2$NB_AUTRE, method = "paired")))
+# t.test(MEF_P2$NB_AUTRE, MEF_P3$NB_AUTRE, alternative = c("two.sided"), paired = TRUE, var.equal = FALSE, conf.level = 0.95)
+# print(paste("Cohen's d :", cohensD(MEF_P2$NB_AUTRE, MEF_P3$NB_AUTRE, method = "paired")))
 ```
 
-ANOVA ET T-TEST NOMBRE DE REGARDS CU
+## ANOVA ET T-TEST NOMBRE DE REGARDS CU
 ```{r}
 NB_TOT_AOV <- Anova(lm(NB_FIXATION~TEMPS*GROUPE, data = CU), type = 2, white.adjust=TRUE)
 NB_TOT_AOV_ST <- anova_stats(Anova(lm(NB_FIXATION~TEMPS*GROUPE, data = CU), type = 2))
@@ -373,9 +345,9 @@ print(paste("Cohen's d :", cohensD(MEF_CU1$NB_AUTRE, MEF_CU2$NB_AUTRE, method = 
 ```
 
 
-################ DURÉE DE REGARDS
+# DURÉE DE REGARDS
 
-ANOVA ET T-TEST DURÉE DES REGARDS PÉRIODES
+## ANOVA ET T-TEST DURÉE DES REGARDS PÉRIODES
 ```{r}
 TPS_ROUTE_AOV <- Anova(lm(TPS_ROUTE~TEMPS*GROUPE, data = PERIODES), type = 2, white.adjust=TRUE)
 TPS_ROUTE_AOV_ST <- anova_stats(Anova(lm(TPS_ROUTE~TEMPS*GROUPE, data = PERIODES), type = 2))
@@ -482,7 +454,7 @@ t.test(MEF_P2$TPS_AUTRE, MEF_P3$TPS_AUTRE, alternative = c("two.sided"), paired 
 print(paste("Cohen's d :", cohensD(MEF_P2$TPS_AUTRE, MEF_P3$TPS_AUTRE, method = "paired")))
 ```
 
-ANOVA ET T-TEST DURÉE DES REGARDS CU
+## ANOVA ET T-TEST DURÉE DES REGARDS CU
 ```{r}
 TPS_TOT_AOV <- Anova(lm(TPS_FIXATION~TEMPS*GROUPE, data = CU), type = 2, white.adjust=TRUE)
 TPS_TOT_AOV_ST <- anova_stats(Anova(lm(TPS_FIXATION~TEMPS*GROUPE, data = CU), type = 2))
@@ -589,130 +561,99 @@ t.test(MEF_CU1$TPS_AUTRE, MEF_CU2$TPS_AUTRE, alternative = c("two.sided"), paire
 print(paste("Cohen's d :", cohensD(MEF_CU1$TPS_AUTRE, MEF_CU2$TPS_AUTRE, method = "paired")))
 ```
 
-################ FRÉQUENCE DES REGARDS
+# FRÉQUENCE DES REGARDS
 
-ANOVA ET T-TEST FRÉQUENCE DES REGARDS PÉRIODES
+## ANOVA ET T-TEST FRÉQUENCE DES REGARDS PÉRIODES
 ```{r}
 FRQ_ROUTE_AOV <- Anova(lm(FRQ_ROUTE~TEMPS*GROUPE, data = PERIODES), type = 2, white.adjust=TRUE)
 FRQ_ROUTE_AOV_ST <- anova_stats(Anova(lm(FRQ_ROUTE~TEMPS*GROUPE, data = PERIODES), type = 2))
 FRQ_ROUTE_AOV
 FRQ_ROUTE_AOV_ST
 
+TukeyHSD(aov(FRQ_ROUTE~TEMPS*GROUPE, data = PERIODES))
+
 ggplot(PERIODES_M) + aes(x = TEMPS, y = FRQ_ROUTE, group= GROUPE, col = GROUPE, ymin = 0) + geom_line(position=position_dodge(0.1)) + geom_point(position=position_dodge(0.1)) + geom_errorbar(aes(ymin=FRQ_ROUTE-FRQ_ROUTE_sd, ymax=FRQ_ROUTE+FRQ_ROUTE_sd), width=0.1, position=position_dodge(0.1)) + 
   ggtitle("Fréquence des regards vers la route") + 
   labs(x = "Période", y = "Fréquence des regards (%)", col = "Groupe") + 
   theme(plot.title = element_text(hjust = 0.5))
 
-t.test(CONF_TOT$FRQ_ROUTE, MEF_TOT$FRQ_ROUTE, alternative = c("two.sided"), paired = FALSE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(CONF_TOT$FRQ_ROUTE, MEF_TOT$FRQ_ROUTE)))
-t.test(CONF_P1$FRQ_ROUTE, MEF_P1$FRQ_ROUTE, alternative = c("two.sided"), paired = FALSE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(CONF_P1$FRQ_ROUTE, MEF_P1$FRQ_ROUTE)))
-t.test(CONF_P2$FRQ_ROUTE, MEF_P2$FRQ_ROUTE, alternative = c("two.sided"), paired = FALSE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(CONF_P2$FRQ_ROUTE, MEF_P2$FRQ_ROUTE)))
-t.test(CONF_P3$FRQ_ROUTE, MEF_P3$FRQ_ROUTE, alternative = c("two.sided"), paired = FALSE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(CONF_P3$FRQ_ROUTE, MEF_P3$FRQ_ROUTE)))
-
-t.test(CONF_P1$FRQ_ROUTE, CONF_P2$FRQ_ROUTE, alternative = c("two.sided"), paired = TRUE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(CONF_P1$FRQ_ROUTE, CONF_P2$FRQ_ROUTE, method = "paired")))
-t.test(CONF_P2$FRQ_ROUTE, CONF_P3$FRQ_ROUTE, alternative = c("two.sided"), paired = TRUE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(CONF_P2$FRQ_ROUTE, CONF_P3$FRQ_ROUTE, method = "paired")))
-t.test(MEF_P1$FRQ_ROUTE, MEF_P2$FRQ_ROUTE, alternative = c("two.sided"), paired = TRUE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(MEF_P1$FRQ_ROUTE, MEF_P2$FRQ_ROUTE, method = "paired")))
-t.test(MEF_P2$FRQ_ROUTE, MEF_P3$FRQ_ROUTE, alternative = c("two.sided"), paired = TRUE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(MEF_P2$FRQ_ROUTE, MEF_P3$FRQ_ROUTE, method = "paired")))
+# t.test(CONF_TOT$FRQ_ROUTE, MEF_TOT$FRQ_ROUTE, alternative = c("two.sided"), paired = FALSE, var.equal = FALSE, conf.level = 0.95)
+# print(paste("Cohen's d :", cohensD(CONF_TOT$FRQ_ROUTE, MEF_TOT$FRQ_ROUTE)))
+# t.test(CONF_P1$FRQ_ROUTE, MEF_P1$FRQ_ROUTE, alternative = c("two.sided"), paired = FALSE, var.equal = FALSE, conf.level = 0.95)
+# print(paste("Cohen's d :", cohensD(CONF_P1$FRQ_ROUTE, MEF_P1$FRQ_ROUTE)))
+# t.test(CONF_P2$FRQ_ROUTE, MEF_P2$FRQ_ROUTE, alternative = c("two.sided"), paired = FALSE, var.equal = FALSE, conf.level = 0.95)
+# print(paste("Cohen's d :", cohensD(CONF_P2$FRQ_ROUTE, MEF_P2$FRQ_ROUTE)))
+# t.test(CONF_P3$FRQ_ROUTE, MEF_P3$FRQ_ROUTE, alternative = c("two.sided"), paired = FALSE, var.equal = FALSE, conf.level = 0.95)
+# print(paste("Cohen's d :", cohensD(CONF_P3$FRQ_ROUTE, MEF_P3$FRQ_ROUTE)))
+# 
+# t.test(CONF_P1$FRQ_ROUTE, CONF_P2$FRQ_ROUTE, alternative = c("two.sided"), paired = TRUE, var.equal = FALSE, conf.level = 0.95)
+# print(paste("Cohen's d :", cohensD(CONF_P1$FRQ_ROUTE, CONF_P2$FRQ_ROUTE, method = "paired")))
+# t.test(CONF_P2$FRQ_ROUTE, CONF_P3$FRQ_ROUTE, alternative = c("two.sided"), paired = TRUE, var.equal = FALSE, conf.level = 0.95)
+# print(paste("Cohen's d :", cohensD(CONF_P2$FRQ_ROUTE, CONF_P3$FRQ_ROUTE, method = "paired")))
+# t.test(MEF_P1$FRQ_ROUTE, MEF_P2$FRQ_ROUTE, alternative = c("two.sided"), paired = TRUE, var.equal = FALSE, conf.level = 0.95)
+# print(paste("Cohen's d :", cohensD(MEF_P1$FRQ_ROUTE, MEF_P2$FRQ_ROUTE, method = "paired")))
+# t.test(MEF_P2$FRQ_ROUTE, MEF_P3$FRQ_ROUTE, alternative = c("two.sided"), paired = TRUE, var.equal = FALSE, conf.level = 0.95)
+# print(paste("Cohen's d :", cohensD(MEF_P2$FRQ_ROUTE, MEF_P3$FRQ_ROUTE, method = "paired")))
 
 FRQ_RETRO_AOV <- Anova(lm(FRQ_RETRO~TEMPS*GROUPE, data = PERIODES), type = 2, white.adjust=TRUE)
 FRQ_RETRO_AOV_ST <- anova_stats(Anova(lm(FRQ_RETRO~TEMPS*GROUPE, data = PERIODES), type = 2))
 FRQ_RETRO_AOV
 FRQ_RETRO_AOV_ST
 
+TukeyHSD(aov(FRQ_RETRO~TEMPS*GROUPE, data = PERIODES))
+
 ggplot(PERIODES_M) + aes(x = TEMPS, y = FRQ_RETRO, group= GROUPE, col = GROUPE, ymin = 0) + geom_line(position=position_dodge(0.1)) + geom_point(position=position_dodge(0.1)) + geom_errorbar(aes(ymin=FRQ_RETRO-FRQ_RETRO_sd, ymax=FRQ_RETRO+FRQ_RETRO_sd), width=0.1, position=position_dodge(0.1)) + 
   ggtitle("Fréquence des regards vers les rétroviseurs") + 
   labs(x = "Période", y = "Fréquence des regards (%)", col = "Groupe") + 
   theme(plot.title = element_text(hjust = 0.5))
 
-t.test(CONF_TOT$FRQ_RETRO, MEF_TOT$FRQ_RETRO, alternative = c("two.sided"), paired = FALSE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(CONF_TOT$FRQ_RETRO, MEF_TOT$FRQ_RETRO)))
-t.test(CONF_P1$FRQ_RETRO, MEF_P1$FRQ_RETRO, alternative = c("two.sided"), paired = FALSE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(CONF_P1$FRQ_RETRO, MEF_P1$FRQ_RETRO)))
-t.test(CONF_P2$FRQ_RETRO, MEF_P2$FRQ_RETRO, alternative = c("two.sided"), paired = FALSE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(CONF_P2$FRQ_RETRO, MEF_P2$FRQ_RETRO)))
-t.test(CONF_P3$FRQ_RETRO, MEF_P3$FRQ_RETRO, alternative = c("two.sided"), paired = FALSE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(CONF_P3$FRQ_RETRO, MEF_P3$FRQ_RETRO)))
-
-t.test(CONF_P1$FRQ_RETRO, CONF_P2$FRQ_RETRO, alternative = c("two.sided"), paired = TRUE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(CONF_P1$FRQ_RETRO, CONF_P2$FRQ_RETRO, method = "paired")))
-t.test(CONF_P2$FRQ_RETRO, CONF_P3$FRQ_RETRO, alternative = c("two.sided"), paired = TRUE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(CONF_P2$FRQ_RETRO, CONF_P3$FRQ_RETRO, method = "paired")))
-t.test(MEF_P1$FRQ_RETRO, MEF_P2$FRQ_RETRO, alternative = c("two.sided"), paired = TRUE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(MEF_P1$FRQ_RETRO, MEF_P2$FRQ_RETRO, method = "paired")))
-t.test(MEF_P2$FRQ_RETRO, MEF_P3$FRQ_RETRO, alternative = c("two.sided"), paired = TRUE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(MEF_P2$FRQ_RETRO, MEF_P3$FRQ_RETRO, method = "paired")))
-
-
-FRQ_RETRO_ROUTE_AOV <- Anova(lm(FRQ_RETRO_ROUTE~TEMPS*GROUPE, data = PERIODES), type = 2, white.adjust=TRUE)
-FRQ_RETRO_ROUTE_AOV_ST <- anova_stats(Anova(lm(FRQ_RETRO_ROUTE~TEMPS*GROUPE, data = PERIODES), type = 2))
-FRQ_RETRO_ROUTE_AOV
-FRQ_RETRO_ROUTE_AOV_ST
-
-ggplot(PERIODES_M) + 
-  geom_line(aes(x = TEMPS, y = FRQ_RETRO_ROUTE, group= GROUPE, col = GROUPE, linetype = "dashed"), position=position_dodge(0.1)) + 
-    geom_line(aes(x = TEMPS, y = FRQ_AVB, group= GROUPE, col = GROUPE, linetype = "solid"), position=position_dodge(0.2)) + 
-  scale_linetype_discrete(name = "Données", labels = c("Route/Rétro", "AVB")) +
-  geom_point(aes(x = TEMPS, y = FRQ_RETRO_ROUTE, group= GROUPE, col = GROUPE), position=position_dodge(0.1)) + geom_point(aes(x = TEMPS, y = FRQ_AVB, group= GROUPE, col = GROUPE), position=position_dodge(0.2)) +
-  geom_errorbar(aes(x = TEMPS, y = FRQ_RETRO_ROUTE, group= GROUPE, col = GROUPE, ymin=FRQ_RETRO_ROUTE-FRQ_RETRO_ROUTE_sd, ymax=FRQ_RETRO_ROUTE+FRQ_RETRO_ROUTE_sd), width=0.1, position=position_dodge(0.1)) +
-  geom_errorbar(aes(x = TEMPS, y = FRQ_RETRO_ROUTE, group= GROUPE, col = GROUPE, ymin=FRQ_AVB-FRQ_AVB_sd, ymax=FRQ_AVB+FRQ_AVB_sd), width=0.1, position=position_dodge(0.2)) + 
-  ggtitle("Fréquence des regards vers la route\n& les rétroviseurs vs vers l'AVB") + 
-  labs(x = "Période", y = "Fréquence des regards", col = "Groupe") + 
-  theme(plot.title = element_text(hjust = 0.5))
-
-t.test(CONF_TOT$FRQ_RETRO_ROUTE, MEF_TOT$FRQ_RETRO_ROUTE, alternative = c("two.sided"), paired = FALSE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(CONF_TOT$FRQ_RETRO_ROUTE, MEF_TOT$FRQ_RETRO_ROUTE)))
-t.test(CONF_P1$FRQ_RETRO_ROUTE, MEF_P1$FRQ_RETRO_ROUTE, alternative = c("two.sided"), paired = FALSE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(CONF_P1$FRQ_RETRO_ROUTE, MEF_P1$FRQ_RETRO_ROUTE)))
-t.test(CONF_P2$FRQ_RETRO_ROUTE, MEF_P2$FRQ_RETRO_ROUTE, alternative = c("two.sided"), paired = FALSE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(CONF_P2$FRQ_RETRO_ROUTE, MEF_P2$FRQ_RETRO_ROUTE)))
-t.test(CONF_P3$FRQ_RETRO_ROUTE, MEF_P3$FRQ_RETRO_ROUTE, alternative = c("two.sided"), paired = FALSE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(CONF_P3$FRQ_RETRO_ROUTE, MEF_P3$FRQ_RETRO_ROUTE)))
-
-t.test(CONF_P1$FRQ_RETRO_ROUTE, CONF_P2$FRQ_RETRO_ROUTE, alternative = c("two.sided"), paired = TRUE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(CONF_P1$FRQ_RETRO_ROUTE, CONF_P2$FRQ_RETRO_ROUTE, method = "paired")))
-t.test(CONF_P2$FRQ_RETRO_ROUTE, CONF_P3$FRQ_RETRO_ROUTE, alternative = c("two.sided"), paired = TRUE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(CONF_P2$FRQ_RETRO_ROUTE, CONF_P3$FRQ_RETRO_ROUTE, method = "paired")))
-t.test(MEF_P1$FRQ_RETRO_ROUTE, MEF_P2$FRQ_RETRO_ROUTE, alternative = c("two.sided"), paired = TRUE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(MEF_P1$FRQ_RETRO_ROUTE, MEF_P2$FRQ_RETRO_ROUTE, method = "paired")))
-t.test(MEF_P2$FRQ_RETRO_ROUTE, MEF_P3$FRQ_RETRO_ROUTE, alternative = c("two.sided"), paired = TRUE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(MEF_P2$FRQ_RETRO_ROUTE, MEF_P3$FRQ_RETRO_ROUTE, method = "paired")))
-
-
+# t.test(CONF_TOT$FRQ_RETRO, MEF_TOT$FRQ_RETRO, alternative = c("two.sided"), paired = FALSE, var.equal = FALSE, conf.level = 0.95)
+# print(paste("Cohen's d :", cohensD(CONF_TOT$FRQ_RETRO, MEF_TOT$FRQ_RETRO)))
+# t.test(CONF_P1$FRQ_RETRO, MEF_P1$FRQ_RETRO, alternative = c("two.sided"), paired = FALSE, var.equal = FALSE, conf.level = 0.95)
+# print(paste("Cohen's d :", cohensD(CONF_P1$FRQ_RETRO, MEF_P1$FRQ_RETRO)))
+# t.test(CONF_P2$FRQ_RETRO, MEF_P2$FRQ_RETRO, alternative = c("two.sided"), paired = FALSE, var.equal = FALSE, conf.level = 0.95)
+# print(paste("Cohen's d :", cohensD(CONF_P2$FRQ_RETRO, MEF_P2$FRQ_RETRO)))
+# t.test(CONF_P3$FRQ_RETRO, MEF_P3$FRQ_RETRO, alternative = c("two.sided"), paired = FALSE, var.equal = FALSE, conf.level = 0.95)
+# print(paste("Cohen's d :", cohensD(CONF_P3$FRQ_RETRO, MEF_P3$FRQ_RETRO)))
+# 
+# t.test(CONF_P1$FRQ_RETRO, CONF_P2$FRQ_RETRO, alternative = c("two.sided"), paired = TRUE, var.equal = FALSE, conf.level = 0.95)
+# print(paste("Cohen's d :", cohensD(CONF_P1$FRQ_RETRO, CONF_P2$FRQ_RETRO, method = "paired")))
+# t.test(CONF_P2$FRQ_RETRO, CONF_P3$FRQ_RETRO, alternative = c("two.sided"), paired = TRUE, var.equal = FALSE, conf.level = 0.95)
+# print(paste("Cohen's d :", cohensD(CONF_P2$FRQ_RETRO, CONF_P3$FRQ_RETRO, method = "paired")))
+# t.test(MEF_P1$FRQ_RETRO, MEF_P2$FRQ_RETRO, alternative = c("two.sided"), paired = TRUE, var.equal = FALSE, conf.level = 0.95)
+# print(paste("Cohen's d :", cohensD(MEF_P1$FRQ_RETRO, MEF_P2$FRQ_RETRO, method = "paired")))
+# t.test(MEF_P2$FRQ_RETRO, MEF_P3$FRQ_RETRO, alternative = c("two.sided"), paired = TRUE, var.equal = FALSE, conf.level = 0.95)
+# print(paste("Cohen's d :", cohensD(MEF_P2$FRQ_RETRO, MEF_P3$FRQ_RETRO, method = "paired")))
 
 FRQ_AVB_AOV <- Anova(lm(FRQ_AVB~TEMPS*GROUPE, data = PERIODES), type = 2, white.adjust=TRUE)
 FRQ_AVB_AOV_ST <- anova_stats(Anova(lm(FRQ_AVB~TEMPS*GROUPE, data = PERIODES), type = 2))
 FRQ_AVB_AOV
 FRQ_AVB_AOV_ST
 
+TukeyHSD(aov(FRQ_AVB~TEMPS*GROUPE, data = PERIODES))
+
 ggplot(PERIODES_M) + aes(x = TEMPS, y = FRQ_AVB, group= GROUPE, col = GROUPE, ymin = 0) + geom_line(position=position_dodge(0.1)) + geom_point(position=position_dodge(0.1)) + geom_errorbar(aes(ymin=FRQ_AVB-FRQ_AVB_sd, ymax=FRQ_AVB+FRQ_AVB_sd), width=0.1, position=position_dodge(0.1)) + 
   ggtitle("Fréquence des regards vers l'AVB") + 
   labs(x = "Période", y = "Fréquence des regards (%)", col = "Groupe") + 
   theme(plot.title = element_text(hjust = 0.5))
 
-t.test(CONF_TOT$FRQ_AVB, MEF_TOT$FRQ_AVB, alternative = c("two.sided"), paired = FALSE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(CONF_TOT$FRQ_AVB, MEF_TOT$FRQ_AVB)))
-t.test(CONF_P1$FRQ_AVB, MEF_P1$FRQ_AVB, alternative = c("two.sided"), paired = FALSE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(CONF_P1$FRQ_AVB, MEF_P1$FRQ_AVB)))
-t.test(CONF_P2$FRQ_AVB, MEF_P2$FRQ_AVB, alternative = c("two.sided"), paired = FALSE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(CONF_P2$FRQ_AVB, MEF_P2$FRQ_AVB)))
-t.test(CONF_P3$FRQ_AVB, MEF_P3$FRQ_AVB, alternative = c("two.sided"), paired = FALSE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(CONF_P3$FRQ_AVB, MEF_P3$FRQ_AVB)))
-
-t.test(CONF_P1$FRQ_AVB, CONF_P2$FRQ_AVB, alternative = c("two.sided"), paired = TRUE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(CONF_P1$FRQ_AVB, CONF_P2$FRQ_AVB, method = "paired")))
-t.test(CONF_P2$FRQ_AVB, CONF_P3$FRQ_AVB, alternative = c("two.sided"), paired = TRUE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(CONF_P2$FRQ_AVB, CONF_P3$FRQ_AVB, method = "paired")))
-t.test(MEF_P1$FRQ_AVB, MEF_P2$FRQ_AVB, alternative = c("two.sided"), paired = TRUE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(MEF_P1$FRQ_AVB, MEF_P2$FRQ_AVB, method = "paired")))
-t.test(MEF_P2$FRQ_AVB, MEF_P3$FRQ_AVB, alternative = c("two.sided"), paired = TRUE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(MEF_P2$FRQ_AVB, MEF_P3$FRQ_AVB, method = "paired")))
+# t.test(CONF_TOT$FRQ_AVB, MEF_TOT$FRQ_AVB, alternative = c("two.sided"), paired = FALSE, var.equal = FALSE, conf.level = 0.95)
+# print(paste("Cohen's d :", cohensD(CONF_TOT$FRQ_AVB, MEF_TOT$FRQ_AVB)))
+# t.test(CONF_P1$FRQ_AVB, MEF_P1$FRQ_AVB, alternative = c("two.sided"), paired = FALSE, var.equal = FALSE, conf.level = 0.95)
+# print(paste("Cohen's d :", cohensD(CONF_P1$FRQ_AVB, MEF_P1$FRQ_AVB)))
+# t.test(CONF_P2$FRQ_AVB, MEF_P2$FRQ_AVB, alternative = c("two.sided"), paired = FALSE, var.equal = FALSE, conf.level = 0.95)
+# print(paste("Cohen's d :", cohensD(CONF_P2$FRQ_AVB, MEF_P2$FRQ_AVB)))
+# t.test(CONF_P3$FRQ_AVB, MEF_P3$FRQ_AVB, alternative = c("two.sided"), paired = FALSE, var.equal = FALSE, conf.level = 0.95)
+# print(paste("Cohen's d :", cohensD(CONF_P3$FRQ_AVB, MEF_P3$FRQ_AVB)))
+# 
+# t.test(CONF_P1$FRQ_AVB, CONF_P2$FRQ_AVB, alternative = c("two.sided"), paired = TRUE, var.equal = FALSE, conf.level = 0.95)
+# print(paste("Cohen's d :", cohensD(CONF_P1$FRQ_AVB, CONF_P2$FRQ_AVB, method = "paired")))
+# t.test(CONF_P2$FRQ_AVB, CONF_P3$FRQ_AVB, alternative = c("two.sided"), paired = TRUE, var.equal = FALSE, conf.level = 0.95)
+# print(paste("Cohen's d :", cohensD(CONF_P2$FRQ_AVB, CONF_P3$FRQ_AVB, method = "paired")))
+# t.test(MEF_P1$FRQ_AVB, MEF_P2$FRQ_AVB, alternative = c("two.sided"), paired = TRUE, var.equal = FALSE, conf.level = 0.95)
+# print(paste("Cohen's d :", cohensD(MEF_P1$FRQ_AVB, MEF_P2$FRQ_AVB, method = "paired")))
+# t.test(MEF_P2$FRQ_AVB, MEF_P3$FRQ_AVB, alternative = c("two.sided"), paired = TRUE, var.equal = FALSE, conf.level = 0.95)
+# print(paste("Cohen's d :", cohensD(MEF_P2$FRQ_AVB, MEF_P3$FRQ_AVB, method = "paired")))
 
 FRQ_AUTRE_AOV <- Anova(lm(FRQ_AUTRE~TEMPS*GROUPE, data = PERIODES), type = 2, white.adjust=TRUE)
 FRQ_AUTRE_AOV_ST <- anova_stats(Anova(lm(FRQ_AUTRE~TEMPS*GROUPE, data = PERIODES), type = 2))
@@ -724,26 +665,26 @@ ggplot(PERIODES_M) + aes(x = TEMPS, y = FRQ_AUTRE, group= GROUPE, col = GROUPE, 
   labs(x = "Période", y = "Fréquence des regards (%)", col = "Groupe") + 
   theme(plot.title = element_text(hjust = 0.5))
 
-t.test(CONF_TOT$FRQ_AUTRE, MEF_TOT$FRQ_AUTRE, alternative = c("two.sided"), paired = FALSE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(CONF_TOT$FRQ_AUTRE, MEF_TOT$FRQ_AUTRE)))
-t.test(CONF_P1$FRQ_AUTRE, MEF_P1$FRQ_AUTRE, alternative = c("two.sided"), paired = FALSE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(CONF_P1$FRQ_AUTRE, MEF_P1$FRQ_AUTRE)))
-t.test(CONF_P2$FRQ_AUTRE, MEF_P2$FRQ_AUTRE, alternative = c("two.sided"), paired = FALSE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(CONF_P2$FRQ_AUTRE, MEF_P2$FRQ_AUTRE)))
-t.test(CONF_P3$FRQ_AUTRE, MEF_P3$FRQ_AUTRE, alternative = c("two.sided"), paired = FALSE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(CONF_P3$FRQ_AUTRE, MEF_P3$FRQ_AUTRE)))
-
-t.test(CONF_P1$FRQ_AUTRE, CONF_P2$FRQ_AUTRE, alternative = c("two.sided"), paired = TRUE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(CONF_P1$FRQ_AUTRE, CONF_P2$FRQ_AUTRE, method = "paired")))
-t.test(CONF_P2$FRQ_AUTRE, CONF_P3$FRQ_AUTRE, alternative = c("two.sided"), paired = TRUE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(CONF_P2$FRQ_AUTRE, CONF_P3$FRQ_AUTRE, method = "paired")))
-t.test(MEF_P1$FRQ_AUTRE, MEF_P2$FRQ_AUTRE, alternative = c("two.sided"), paired = TRUE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(MEF_P1$FRQ_AUTRE, MEF_P2$FRQ_AUTRE, method = "paired")))
-t.test(MEF_P2$FRQ_AUTRE, MEF_P3$FRQ_AUTRE, alternative = c("two.sided"), paired = TRUE, var.equal = FALSE, conf.level = 0.95)
-print(paste("Cohen's d :", cohensD(MEF_P2$FRQ_AUTRE, MEF_P3$FRQ_AUTRE, method = "paired")))
+# t.test(CONF_TOT$FRQ_AUTRE, MEF_TOT$FRQ_AUTRE, alternative = c("two.sided"), paired = FALSE, var.equal = FALSE, conf.level = 0.95)
+# print(paste("Cohen's d :", cohensD(CONF_TOT$FRQ_AUTRE, MEF_TOT$FRQ_AUTRE)))
+# t.test(CONF_P1$FRQ_AUTRE, MEF_P1$FRQ_AUTRE, alternative = c("two.sided"), paired = FALSE, var.equal = FALSE, conf.level = 0.95)
+# print(paste("Cohen's d :", cohensD(CONF_P1$FRQ_AUTRE, MEF_P1$FRQ_AUTRE)))
+# t.test(CONF_P2$FRQ_AUTRE, MEF_P2$FRQ_AUTRE, alternative = c("two.sided"), paired = FALSE, var.equal = FALSE, conf.level = 0.95)
+# print(paste("Cohen's d :", cohensD(CONF_P2$FRQ_AUTRE, MEF_P2$FRQ_AUTRE)))
+# t.test(CONF_P3$FRQ_AUTRE, MEF_P3$FRQ_AUTRE, alternative = c("two.sided"), paired = FALSE, var.equal = FALSE, conf.level = 0.95)
+# print(paste("Cohen's d :", cohensD(CONF_P3$FRQ_AUTRE, MEF_P3$FRQ_AUTRE)))
+# 
+# t.test(CONF_P1$FRQ_AUTRE, CONF_P2$FRQ_AUTRE, alternative = c("two.sided"), paired = TRUE, var.equal = FALSE, conf.level = 0.95)
+# print(paste("Cohen's d :", cohensD(CONF_P1$FRQ_AUTRE, CONF_P2$FRQ_AUTRE, method = "paired")))
+# t.test(CONF_P2$FRQ_AUTRE, CONF_P3$FRQ_AUTRE, alternative = c("two.sided"), paired = TRUE, var.equal = FALSE, conf.level = 0.95)
+# print(paste("Cohen's d :", cohensD(CONF_P2$FRQ_AUTRE, CONF_P3$FRQ_AUTRE, method = "paired")))
+# t.test(MEF_P1$FRQ_AUTRE, MEF_P2$FRQ_AUTRE, alternative = c("two.sided"), paired = TRUE, var.equal = FALSE, conf.level = 0.95)
+# print(paste("Cohen's d :", cohensD(MEF_P1$FRQ_AUTRE, MEF_P2$FRQ_AUTRE, method = "paired")))
+# t.test(MEF_P2$FRQ_AUTRE, MEF_P3$FRQ_AUTRE, alternative = c("two.sided"), paired = TRUE, var.equal = FALSE, conf.level = 0.95)
+# print(paste("Cohen's d :", cohensD(MEF_P2$FRQ_AUTRE, MEF_P3$FRQ_AUTRE, method = "paired")))
 ```
 
-ANOVA ET T-TEST REGARDS CU
+## ANOVA ET T-TEST REGARDS CU
 ``` {r}
 FRQ_ROUTE_AOV <- Anova(lm(FRQ_ROUTE~TEMPS*GROUPE, data = CU), type = 2, white.adjust=TRUE)
 FRQ_ROUTE_AOV_ST <- anova_stats(Anova(lm(FRQ_ROUTE~TEMPS*GROUPE, data = CU), type = 2))
@@ -780,19 +721,6 @@ t.test(CONF_CU1$FRQ_RETRO, CONF_CU2$FRQ_RETRO, alternative = c("two.sided"), pai
 print(paste("Cohen's d :", cohensD(CONF_CU1$FRQ_RETRO, CONF_CU2$FRQ_RETRO, method = "paired")))
 t.test(MEF_CU1$FRQ_RETRO, MEF_CU2$FRQ_RETRO, alternative = c("two.sided"), paired = TRUE, var.equal = FALSE, conf.level = 0.95)
 print(paste("Cohen's d :", cohensD(MEF_CU1$FRQ_RETRO, MEF_CU2$FRQ_RETRO, method = "paired")))
-
-
-ggplot(CU_M) + 
-  geom_line(aes(x = TEMPS, y = FRQ_RETRO_ROUTE, group= GROUPE, col = GROUPE, linetype = "dashed"), position=position_dodge(0.1)) + 
-    geom_line(aes(x = TEMPS, y = FRQ_AVB, group= GROUPE, col = GROUPE, linetype = "solid"), position=position_dodge(0.2)) + 
-  scale_linetype_discrete(name = "Données", labels = c("Route/Rétro", "AVB")) +
-  geom_point(aes(x = TEMPS, y = FRQ_RETRO_ROUTE, group= GROUPE, col = GROUPE), position=position_dodge(0.1)) + geom_point(aes(x = TEMPS, y = FRQ_AVB, group= GROUPE, col = GROUPE), position=position_dodge(0.2)) +
-  geom_errorbar(aes(x = TEMPS, y = FRQ_RETRO_ROUTE, group= GROUPE, col = GROUPE, ymin=FRQ_RETRO_ROUTE-FRQ_RETRO_ROUTE_sd, ymax=FRQ_RETRO_ROUTE+FRQ_RETRO_ROUTE_sd), width=0.1, position=position_dodge(0.1)) +
-  geom_errorbar(aes(x = TEMPS, y = FRQ_RETRO_ROUTE, group= GROUPE, col = GROUPE, ymin=FRQ_AVB-FRQ_AVB_sd, ymax=FRQ_AVB+FRQ_AVB_sd), width=0.1, position=position_dodge(0.2)) + 
-  ggtitle("Fréquence des regards vers la route\n& les rétroviseurs vs vers l'AVB") + 
-  labs(x = "Cas d'Usage", y = "Fréquence des regards", col = "Groupe") + 
-  theme(plot.title = element_text(hjust = 0.5))
-
 
 FRQ_AVB_AOV <- Anova(lm(FRQ_AVB~TEMPS*GROUPE, data = CU), type = 2, white.adjust=TRUE)
 FRQ_AVB_AOV_ST <- anova_stats(Anova(lm(FRQ_AVB~TEMPS*GROUPE, data = CU), type = 2))
