@@ -1,4 +1,7 @@
 #! /bin/bash
+# This tool is intended to facilitate NFC tag cloning.
+# It used libnfc and mfoc, and is provided with absolutely no warranty.
+# Use as the superuser (to get access to NFC reader) at your own risk.
 echo "NFC tag cloning utility (using libnfc and mfoc)
 Put the \"chinese\" blank card on the NFC reader
 "
